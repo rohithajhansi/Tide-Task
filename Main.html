@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oceania Beach Planner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+    :root {
+      /* sunny‑beach palette */
+      --sand: #fce9c0;
+      --sea: rgba(255,255,255,0.75);
+      --sky: #a7d8ff;
+      --accent: #0077b6;
+      --text-main: #003049;
+    }
+
+    html,body{height:100%;margin:0}
+    body{
+      font-family:'Comfortaa',cursive;
+      color:var(--text-main);
+      display:flex;flex-direction:column;align-items:center;
+      /* pure beach photo no overlay */
+      background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat fixed;
+    }
+
+    /* emoji banner */
+    body::before{
+      content:"🏖️🌴🌊☀️⛱️";
+      position:fixed;top:0;left:0;width:100%;text-align:center;
+      background:rgba(255,255,255,0.6);
+      padding:0.25rem 0;letter-spacing:0.5rem;font-size:1.4rem;
+      pointer-events:none;
+    }
+
+    header{text-align:center;padding:2rem 1rem;background:var(--sea);backdrop-filter:blur(6px);width:100%}
+    h1{color:var(--accent);margin:0}
+
+    .calendar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;padding:1rem;width:100%;max-width:1100px}
+    .day{background:var(--sea);backdrop-filter:blur(8px);border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.25);padding:1rem;min-height:220px}
+    .day h3{margin-top:0;color:var(--accent)}
+
+    .todo-list{display:flex;flex-direction:column}
+    .todo-item{display:flex;align-items:center;margin:.3rem 0}
+    input[type="text"]{flex-grow:1;background:var(--sand);border:none;padding:.5rem;border-radius:6px;margin-left:.5rem}
+    button{margin-top:.5rem;background:var(--accent);color:#fff;border:none;padding:.4rem .8rem;border-radius:6px;cursor:pointer}
+    button:hover{opacity:.85}
+
+    .monthly-calendar{margin-top:3rem;background:var(--sea);backdrop-filter:blur(6px);border-radius:12px;padding:1rem;width:90%;max-width:800px;box-shadow:0 4px 6px rgba(0,0,0,.25)}
+    .monthly-calendar h2{text-align:center;color:var(--accent)}
+    .monthly-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;text-align:center;margin-top:1rem}
+    .monthly-grid div{background:var(--sand);padding:.5rem;border-radius:6px}
+
+    .widgets{margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+    .widget{background:var(--sea);backdrop-filter:blur(6px);border-radius:12px;padding:1rem;color:var(--accent);min-width:200px;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,.25)}
+
+    /* --- music player --- */
+    .player{
+      position:fixed;bottom:1rem;right:1rem;display:flex;align-items:center;gap:.5rem;
+      background:var(--sea);backdrop-filter:blur(6px);padding:.6rem 1rem;border-radius:9999px;box-shadow:0 4px 6px rgba(0,0,0,.25);
+    }
+    .player button{margin:0}
+    .track-title{font-size:.9rem;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+
+    audio{display:none}
+    @media(max-width:600px){h1{font-size:1.7rem}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Beach Planner</h1>
+    <p>Sandy toes & organized days ☀️</p>
+  </header>
+
+  <div class="calendar">
+    <template id="day-template">
+      <div class="day">
+        <h3></h3>
+        <div class="todo-list"></div>
+        <button>Add Task</button>
+      </div>
+    </template>
+  </div>
+
+  <div class="monthly-calendar">
+    <h2>April 2025</h2>
+    <div class="monthly-grid">
+      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      <div></div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div>
+      <div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div>
+      <div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div>
+      <div>21</div><div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div>
+      <div>28</div><div>29</div><div>30</div><div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+
+  <div class="widgets">
+    <div class="widget">🧴 Wellness: Think about yourself!</div>
+    <div class="widget">🥥 Hydration: Sip some coconut water.</div>
+    <div class="widget">🏄‍♂️ Break: Stretch like you’re waxing a surfboard.</div>
+  </div>
+
+  <!-- background music playlist -->
+  <audio id="bg-audio" preload="auto">
+    <source src="https://www.bensound.com/bensound-music/bensound-tomorrow.mp3" type="audio/mpeg">
+    <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+    <source src="https://www.bensound.com/bensound-music/bensound-summer.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- compact player UI -->
+  <div class="player">
+    <button id="play-btn">▶️</button>
+    <span class="track-title" id="track-title">Tomorrow – Bensound</span>
+  </div>
+
+  <script>
+    const days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const calendar=document.querySelector('.calendar');
+    const tmpl=document.getElementById('day-template');
+    days.forEach(d=>{const c=tmpl.content.cloneNode(true);c.querySelector('h3').textContent=d;const id=`${d.toLowerCase()}-list`;c.querySelector('.todo-list').id=id;c.querySelector('button').setAttribute('onclick',`addTodo('${id}')`);calendar.appendChild(c);});
+    function addTodo(id){const list=document.getElementById(id);const div=document.createElement('div');div.className='todo-item';div.innerHTML=`<input type="checkbox" onclick="removeTodo(this)"><input type="text" placeholder="New task...">`;list.appendChild(div);}function removeTodo(cb){if(cb.checked)cb.parentElement.remove();}
+
+    // --- music logic ---
+    const player=document.getElementById('bg-audio');
+    const playBtn=document.getElementById('play-btn');
+    const titleSpan=document.getElementById('track-title');
+    const tracks=[...player.querySelectorAll('source')].map(s=>({src:s.src,title:s.src.split('-').pop().replace('.mp3','').replace(/%20/g,' ')}));
+    let idx=0;
+    function load(i){player.src=tracks[i].src;titleSpan.textContent=tracks[i].title;player.load();}
+    load(idx);
+    playBtn.addEventListener('click',()=>{if(player.paused){player.play();playBtn.textContent='⏸️';}else{player.pause();playBtn.textContent='▶️';}});
+    player.addEventListener('ended',()=>{idx=(idx+1)%tracks.length;load(idx);player.play();});
+  </script>
+</body>
+</html>
+
